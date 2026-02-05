@@ -271,3 +271,7 @@ export default function RegisterPage() {
   );
 }
 ```
+
+```cmd
+pnpm i zustand
+```

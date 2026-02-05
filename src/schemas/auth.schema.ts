@@ -12,3 +12,11 @@ export const registerSchema = z
   });
 
 export type RegisterSchema = z.infer<typeof registerSchema>;
+
+// --------------- login
+export const loginSchema = z.object({
+  username: z.string().min(3),
+  password: z.string().min(3),
+});
+
+export type LoginSchema = z.infer<typeof loginSchema>;

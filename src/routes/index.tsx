@@ -1,11 +1,12 @@
 // src/route/index.ts
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import MainLayout from "../layouts/MainLayout";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import TodosPage from "../pages/TodosPage";
 import UpdateTodoPage from "../pages/UpdateTodoPage";
+import PrivateRoute from "../components/PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -22,8 +23,16 @@ export const router = createBrowserRouter([
       },
       {
         path: "todos",
+        element: (
+          <PrivateRoute>
+            <Outlet />
+          </PrivateRoute>
+        ),
         children: [
-          { path: ":page", element: <TodosPage /> },
+          {
+            path: ":page",
+            element: <TodosPage />,
+          },
           { path: "update/:id", element: <UpdateTodoPage /> },
         ],
       },

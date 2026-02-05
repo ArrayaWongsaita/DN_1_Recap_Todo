@@ -1,13 +1,15 @@
 import { useForm } from "react-hook-form";
 import FieldInput from "../components/FieldInput";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema, type RegisterSchema } from "../schemas/auth.schema";
+import { loginSchema, type LoginSchema } from "../schemas/auth.schema";
 import { axiosInstance } from "../config/axios.config";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router";
+import { useAuthStore } from "../stores/user.store";
 
 export default function LoginPage() {
+  const setAuth = useAuthStore((state) => state.setAuth);
   const navigate = useNavigate();
   const {
     setError,
@@ -15,28 +17,31 @@ export default function LoginPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (data: RegisterSchema) => {
+  const onSubmit = async (data: LoginSchema) => {
     try {
-      await axiosInstance.post("/api/V1/auth/register", data);
-      toast.success("register success");
-      navigate("/auth/login");
+      const res = await axiosInstance.post("/api/V1/auth/login", data);
+      // set data
+      const user = { userId: res.data.userId };
+      const accessToken = res.data.accessToken;
+      setAuth(user, accessToken);
+
+      toast.success("login success");
+      navigate("/todos/1");
     } catch (error) {
       if (error instanceof AxiosError) {
-        // error.response?.status === 409
         const message = error.response?.data?.message;
         toast.error(message);
         setError("username", { message });
         return;
       }
-      toast.error("register error");
+      toast.error("login error");
     }
   };
 
@@ -54,11 +59,7 @@ export default function LoginPage() {
             error={errors.password?.message}
             {...register("password")}
           />
-          <FieldInput
-            label="ConfirmPassword"
-            error={errors.confirmPassword?.message}
-            {...register("confirmPassword")}
-          />
+
           <button>{isSubmitting ? "loading ... " : "Submit"}</button>
         </form>
       </div>
