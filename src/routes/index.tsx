@@ -7,6 +7,7 @@ import RegisterPage from "../pages/RegisterPage";
 import TodosPage from "../pages/TodosPage";
 import UpdateTodoPage from "../pages/UpdateTodoPage";
 import PrivateRoute from "../components/PrivateRoute";
+import { loadTodos } from "../loaders/todo.loader";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: ":page",
+            loader: loadTodos,
             element: <TodosPage />,
           },
           { path: "update/:id", element: <UpdateTodoPage /> },

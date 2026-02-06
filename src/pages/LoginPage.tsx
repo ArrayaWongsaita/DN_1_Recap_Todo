@@ -19,8 +19,8 @@ export default function LoginPage() {
   } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: "usernon",
+      password: "usernon123",
     },
   });
 
